@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
                     mBundle.putSerializable("doubleArray", getUpper(getDoubleMatrix()));
                     NextActivity.putExtras(mBundle);
                     NextActivity.putExtra("determinant", determinant(getDoubleMatrix()));
+                    NextActivity.putExtra("eigenvaluereal", eigenValueReal(getDoubleMatrix()));
+                    NextActivity.putExtra("eigenvalueimag", eigenValueImag(getDoubleMatrix()));
                 startActivity(NextActivity);
             }
         });
@@ -97,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
         }
         if (rowValid == 0 || columbValid == 0) {
             System.out.println("This idiot didn't put any number! Dumb ass.");
-            return null;
+            double[][] temp = new double[1][1];
+            return temp;
         }
         double[][] outputSized = new double[rowValid][columbValid];
         System.out.println("sizing matrix:");
@@ -134,12 +137,35 @@ public class MainActivity extends AppCompatActivity {
         return output;
     }
     public double determinant(double[][] input) {
-        Matrix a = new Matrix(input);
-        LUDecomposition aa = new LUDecomposition(a);
         if (input.length != input[0].length) {
             return 1.23456789012345;
         }
+        Matrix a = new Matrix(input);
+        LUDecomposition aa = new LUDecomposition(a);
         double output = aa.det();
+        return output;
+    }
+
+    public double[] eigenValueReal(double[][] input) {
+        if (input.length != input[0].length) {
+            double[] temp = new double[1];
+            temp[0] = 0.12345678901234;
+            return temp;
+        }
+        Matrix current = new Matrix(input);
+        EigenvalueDecomposition calculator = new EigenvalueDecomposition(current);
+        double[] output = calculator.getRealEigenvalues();
+        return output;
+    }
+    public double[] eigenValueImag(double[][] input) {
+        if (input.length != input[0].length) {
+            double[] temp = new double[1];
+            temp[0] = 0.12345678901234;
+            return temp;
+        }
+        Matrix current = new Matrix(input);
+        EigenvalueDecomposition calculator = new EigenvalueDecomposition(current);
+        double[] output = calculator.getImagEigenvalues();
         return output;
     }
 }

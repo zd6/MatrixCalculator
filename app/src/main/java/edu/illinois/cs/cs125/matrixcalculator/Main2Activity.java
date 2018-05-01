@@ -23,6 +23,10 @@ public class Main2Activity extends AppCompatActivity {
             return;
         }
         double determinant = getIntent().getExtras().getDouble("determinant", 0.0);
+        double[] eigenvalueReal = {0.12345678901234};
+        eigenvalueReal = getIntent().getExtras().getDoubleArray("eigenvaluereal");
+        double[] eigenvalueImag = {0.12345678901234};
+        eigenvalueImag = getIntent().getExtras().getDoubleArray("eigenvalueimag");
         getUpper = new double[objectArray.length][];
         for (int i = 0; i < objectArray.length; i++) {
             getUpper[i] = (double[]) objectArray[i];
@@ -41,7 +45,22 @@ public class Main2Activity extends AppCompatActivity {
             for (int i = 0; i < getUpper.length; i++) {
                 display += "[";
                 for (int j = 0; j < getUpper[0].length; j++) {
-                    display = display + getUpper[i][j];
+                    String fixedLength = Double.toString(getUpper[i][j]);
+                    String tail="";
+                    if (fixedLength.contains("E")){
+                        tail = fixedLength.substring(fixedLength.indexOf('E'));
+                    }
+                    if (getUpper[i][j] >= 0) {
+                        fixedLength = " " + fixedLength;
+                    }
+                    if (fixedLength.length() - fixedLength.indexOf('.') > 4) {
+                        fixedLength = fixedLength.substring(0, fixedLength.indexOf('.') + 5);
+                    }
+                    while (fixedLength.length() - fixedLength.indexOf('.') <= 4) {
+                        fixedLength += 0;
+                    }
+                    fixedLength += tail;
+                    display = display + fixedLength;
                     if (j == getUpper[0].length - 1) {
                         continue;
                     }
@@ -60,10 +79,25 @@ public class Main2Activity extends AppCompatActivity {
         if (determinant != 1.23456789012345) {
             displayDeterminant = "" + determinant;
         } else {
-            displayDeterminant = "Determinant must be square!\nPay attention in lectures!!!";
+            displayDeterminant = "Determinant must be square!";
+            if (getUpper[0][0] != 0.00001) {
+                displayDeterminant += "\nPay attention in lectures!!";
+            }
+        }
+        String outputEigenValue = "";
+        if (eigenvalueReal[0] != 0.12345678901234 && eigenvalueImag[0] != 0.12345678901234) {
+            for (int i = 0; i < eigenvalueReal.length; i++) {
+                outputEigenValue += "[" + fixlength(eigenvalueReal[i]) + " + " + fixlength(eigenvalueImag[i]) + "i]\n" ;
+            }
+        } else {
+            outputEigenValue = "Invalid Input";
         }
         System.out.print("determinant: ");
         System.out.println(displayDeterminant);
+        System.out.println("eigenvalue: ");
+        System.out.println(outputEigenValue);
+        TextView outputEigenvalue = (TextView) findViewById(R.id.eigenValueoutput);
+        outputEigenvalue.setText(outputEigenValue);
         TextView outputDeterminant = (TextView) findViewById(R.id.determinant);
         outputDeterminant.setText(displayDeterminant);
         final Button backButton = findViewById(R.id.BackButton);
@@ -74,5 +108,22 @@ public class Main2Activity extends AppCompatActivity {
                 startActivity(BackActivity);
             }
         });
+    }
+    public String fixlength(double input) {
+        String fixedLength = Double.toString(input);
+        String tail="";
+        if (fixedLength.contains("E")){
+            tail = fixedLength.substring(fixedLength.indexOf('E'));
+        }
+        if (input >= 0) {
+            fixedLength = " " + fixedLength;
+        }
+        if (fixedLength.length() - fixedLength.indexOf('.') > 4) {
+            fixedLength = fixedLength.substring(0, fixedLength.indexOf('.') + 5);
+        }
+        while (fixedLength.length() - fixedLength.indexOf('.') <= 4) {
+            fixedLength += 0;
+        }
+        return fixedLength + tail;
     }
 }
